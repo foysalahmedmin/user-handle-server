@@ -19,12 +19,29 @@ const findAllUserFromDB = async () => {
 };
 
 const findOneUserFromDB = async (userId: number) => {
+  // Build in static method;
+  if (!(await User.isUserExist(userId))) {
+    throw { code: 404, description: 'User not found!' };
+  }
   const result = await User.findOne({ userId: userId });
   return result;
 };
 
-const updateOneUserFromDB = async (userId: number, userData: TUser) => {
-  const result = await User.updateOne({ userId: userId }, userData);
+const updateOneUserFromDB = async (userId: number, userUpdatedData: TUser) => {
+  // Build in static method;
+  if (!(await User.isUserExist(userId))) {
+    throw { code: 404, description: 'User not found!' };
+  }
+  const result = await User.updateOne({ userId: userId }, userUpdatedData);
+  return result;
+};
+
+const deleteOneUserFromDB = async (userId: number) => {
+  // Build in static method;
+  if (!(await User.isUserExist(userId))) {
+    throw { code: 404, description: 'User not found!' };
+  }
+  const result = await User.updateOne({ userId: userId }, { isDeleted: true });
   return result;
 };
 
@@ -33,4 +50,5 @@ export const UserServices = {
   findAllUserFromDB,
   findOneUserFromDB,
   updateOneUserFromDB,
+  deleteOneUserFromDB,
 };
