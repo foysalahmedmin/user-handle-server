@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Schema, model } from 'mongoose';
+import { Query, Schema, model } from 'mongoose';
 import config from '../../config';
 import {
   TAddress,
@@ -62,6 +62,7 @@ const UserSchema = new Schema<TUser>(
     username: { type: String, required: true, unique: true },
     password: {
       type: String,
+      select: false,
       required: true,
       minlength: [6, 'The password should be a minimum of 6 characters'],
       maxlength: [12, 'The password should be a maximum of 12 characters'],
@@ -103,6 +104,15 @@ UserSchema.pre('save', async function (next) {
 // post save middleware/ hook
 UserSchema.post('save', function (document, next) {
   document.password = '';
+  document.toObject();
+  delete (document as any).password;
+  document.toJSON();
+  next();
+});
+
+// Pre hook for query middleware
+UserSchema.pre(/^find/, function (this: Query<TUser, Document>, next) {
+  this.select('-password');
   next();
 });
 
