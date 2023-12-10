@@ -113,7 +113,12 @@ UserSchema.post('save', function (document, next) {
 
 // Pre hook for query middleware
 UserSchema.pre(/^find/, function (this: Query<TUser, Document>, next) {
-  this.select('-password');
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+UserSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { is_deleted: { $ne: true } } });
   next();
 });
 
