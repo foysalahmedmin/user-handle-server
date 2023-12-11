@@ -66,6 +66,35 @@ const findAllOrderUserFromDB = async (userId: number) => {
   return result;
 };
 
+const findTotalOfOrderUserFromDB = async (userId: number) => {
+  // Build in static method;
+  if (!(await User.isUserExist(userId))) {
+    throw { code: 404, description: 'User not found!' };
+  }
+  // const result = await User.findOne({ userId: userId }).select('totalPrice');
+
+  const result = await User.aggregate([
+    {
+      $match: { userId: userId },
+    },
+    {
+      $project: {
+        totalPrice: {
+          $sum: {
+            $map: {
+              input: '$orders',
+              as: 'order',
+              in: { $multiply: ['$$order.price', '$$order.quantity'] },
+            },
+          },
+        },
+      },
+    },
+  ]);
+
+  return result;
+};
+
 export const UserServices = {
   insertUserIntoDB,
   findAllUserFromDB,
@@ -74,4 +103,5 @@ export const UserServices = {
   deleteOneUserFromDB,
   addOrderUserIntoDB,
   findAllOrderUserFromDB,
+  findTotalOfOrderUserFromDB,
 };

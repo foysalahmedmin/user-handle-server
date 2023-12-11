@@ -92,6 +92,16 @@ const UserSchema = new Schema<TUser>(
     },
   },
 );
+UserSchema.virtual('totalPrice').get(function () {
+  const orders: TOrder[] = this.orders || [];
+  const totalPrice: number = orders?.reduce(
+    (currentPrice: number, order: TOrder): number => {
+      return currentPrice + (order.price || 0) * (order.quantity || 0);
+    },
+    0,
+  );
+  return totalPrice || 0;
+});
 
 // Pre save middleware/ hook
 UserSchema.pre('save', async function (next) {
