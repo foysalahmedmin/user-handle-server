@@ -9,7 +9,7 @@ app.use(express.json());
 app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('Welcome to user handle server!');
 });
 
 export default app;
