@@ -1,4 +1,4 @@
-import { TUser } from './user.interface';
+import { TOrder, TUser } from './user.interface';
 import { User } from './user.model';
 
 const insertUserIntoDB = async (userData: TUser) => {
@@ -45,10 +45,23 @@ const deleteOneUserFromDB = async (userId: number) => {
   return result;
 };
 
+const addOrderUserFromDB = async (userId: number, orderData: TOrder) => {
+  // Build in static method;
+  if (!(await User.isUserExist(userId))) {
+    throw { code: 404, description: 'User not found!' };
+  }
+  const result = await User.updateOne(
+    { userId: userId },
+    { $push: { orders: orderData } },
+  );
+  return result;
+};
+
 export const UserServices = {
   insertUserIntoDB,
   findAllUserFromDB,
   findOneUserFromDB,
   updateOneUserFromDB,
   deleteOneUserFromDB,
+  addOrderUserFromDB,
 };
