@@ -145,8 +145,8 @@ const addOrderUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'User updated successfully!',
-      data: result,
+      message: 'Order created successfully!',
+      data: null,
     });
   } catch (err: any) {
     if (err.code === 404) {
