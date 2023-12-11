@@ -45,7 +45,7 @@ const deleteOneUserFromDB = async (userId: number) => {
   return result;
 };
 
-const addOrderUserFromDB = async (userId: number, orderData: TOrder) => {
+const addOrderUserIntoDB = async (userId: number, orderData: TOrder) => {
   // Build in static method;
   if (!(await User.isUserExist(userId))) {
     throw { code: 404, description: 'User not found!' };
@@ -63,5 +63,5 @@ export const UserServices = {
   findOneUserFromDB,
   updateOneUserFromDB,
   deleteOneUserFromDB,
-  addOrderUserFromDB,
+  addOrderUserIntoDB,
 };
